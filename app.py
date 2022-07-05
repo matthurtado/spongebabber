@@ -26,3 +26,7 @@ def spongebobify_there(textToSponge = None):
         return encoded_image.decode('utf-8')
     else:
         return 'Content-Type not supported!'
+
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)
