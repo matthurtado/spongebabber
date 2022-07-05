@@ -30,7 +30,7 @@
                 "textToSponge": textToSponge
             }),
             success: function (data) {
-                $('#spongeText').html("<img src='"+data+"'/>")
+                $('#spongeText').html("<img src='data:image/jpeg;base64,"+data+"'/>")
             }
         });
     });

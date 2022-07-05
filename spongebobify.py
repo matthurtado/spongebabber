@@ -1,7 +1,10 @@
+import base64
+from io import BytesIO
 import uuid
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from flask import send_file
 
 def find_font_size(text, font, image, target_width_ratio):
     tested_font_size = 100
@@ -31,7 +34,8 @@ def create_image(text, font, image_path):
     # # Call draw Method to add 2D graphics in an image
     I1 = ImageDraw.Draw(image)
     # # Add Text to an image
-    I1.text((28, 300), spongebobify(text), font=font, fill=(255, 255, 255))
-    new_image_path = "static/images/generated/spongebobified_" + str(uuid.uuid4()) + ".jpg"
-    image.save(new_image_path)
-    return new_image_path
+    I1.text((28, 280), spongebobify(text), font=font, fill=(255, 255, 255))
+    img_io = BytesIO()
+    image.save(img_io, format='JPEG')
+    img_io.seek(0)
+    return base64.b64encode(img_io.getvalue())

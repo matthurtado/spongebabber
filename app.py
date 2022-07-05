@@ -1,5 +1,6 @@
 from flask import Flask, request, json, render_template
 from flask_bootstrap import Bootstrap
+from PIL import Image
 import spongebobify
 
 def create_app():
@@ -21,7 +22,7 @@ def spongebobify_there(textToSponge = None):
     if (content_type == 'application/json'):
         data = json.loads(request.data)
         textToSponge = data['textToSponge']
-        linkToReturn = spongebobify.create_image(textToSponge, "static/fonts/impact.ttf", "static/images/spongebob.jpg")
-        return linkToReturn
+        encoded_image = spongebobify.create_image(textToSponge, "static/fonts/impact.ttf", "static/images/spongebob.jpg")
+        return encoded_image.decode('utf-8')
     else:
         return 'Content-Type not supported!'
