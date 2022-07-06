@@ -1,11 +1,9 @@
 import base64
 from io import BytesIO
 from urllib.request import urlopen
-import uuid
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from flask import send_file
 
 def find_font_size(text, font, image, target_width_ratio):
     tested_font_size = 100
@@ -28,9 +26,9 @@ def spongebobify(text):
             res += value.lower()
     return res
 
-def create_image(text, font, image_path, text_x_pos, text_y_pos):
+def create_image(text, font, image_path, text_x_pos, text_y_pos, target_width_ratio):
     image = Image.open(urlopen(image_path))
-    font_size = find_font_size(text, font, image, 0.6)
+    font_size = find_font_size(text, font, image, target_width_ratio)
     font = ImageFont.truetype(urlopen(font), font_size)
     # # Call draw Method to add 2D graphics in an image
     I1 = ImageDraw.Draw(image)
