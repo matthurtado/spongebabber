@@ -30,7 +30,7 @@ def spongebobify(text):
 
 def create_image(text, font, image_path):
     image = Image.open(urlopen(image_path))
-    font_size = find_font_size(text, font, image, 0.5)
+    font_size = find_font_size(text, font, image, 0.9)
     font = ImageFont.truetype(urlopen(font), font_size)
     # # Call draw Method to add 2D graphics in an image
     I1 = ImageDraw.Draw(image)
