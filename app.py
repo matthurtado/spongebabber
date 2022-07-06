@@ -2,6 +2,7 @@ from flask import Flask, request, json, render_template
 from flask_bootstrap import Bootstrap
 from PIL import Image
 import spongebobify
+from urllib.request import urlopen
 
 def create_app():
   app = Flask(__name__, static_folder='static', static_url_path='')
@@ -22,7 +23,7 @@ def spongebobify_there(textToSponge = None):
     if (content_type == 'application/json'):
         data = json.loads(request.data)
         textToSponge = data['textToSponge']
-        encoded_image = spongebobify.create_image(textToSponge, r"./static/fonts/impact.ttf", "static/images/spongebob.jpg")
+        encoded_image = spongebobify.create_image(textToSponge, "https://github.com/matthurtado/spongebabber/blob/main/static/impact.ttf?raw=true", "https://i.imgur.com/XbXj7M4.jpg")
         return encoded_image.decode('utf-8')
     else:
         return 'Content-Type not supported!'
