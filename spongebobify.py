@@ -28,14 +28,14 @@ def spongebobify(text):
             res += value.lower()
     return res
 
-def create_image(text, font, image_path):
+def create_image(text, font, image_path, text_x_pos, text_y_pos):
     image = Image.open(urlopen(image_path))
-    font_size = find_font_size(text, font, image, 0.9)
+    font_size = find_font_size(text, font, image, 0.6)
     font = ImageFont.truetype(urlopen(font), font_size)
     # # Call draw Method to add 2D graphics in an image
     I1 = ImageDraw.Draw(image)
     # # Add Text to an image
-    I1.text((28, 280), spongebobify(text), font=font, fill=(255, 255, 255))
+    I1.text((text_x_pos, text_y_pos), spongebobify(text), font=font, fill=(255, 255, 255))
     img_io = BytesIO()
     image.save(img_io, format='JPEG')
     img_io.seek(0)
