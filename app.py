@@ -25,6 +25,7 @@ def spongebobify_there(textToSponge = None):
         textXPos = 28
         textYPos = 280
         targetWidthRatio = 0.6
+        spongeTheText = True
         data = json.loads(request.data)
         textToSponge = data['textToSponge']
         if(data['imageOverride']):
@@ -35,7 +36,11 @@ def spongebobify_there(textToSponge = None):
             textYPos = int(data['textYPos'])
         if(data['targetWidthRatio']):
             targetWidthRatio = float(data['targetWidthRatio'])
-        encoded_image = spongebobify.create_image(textToSponge, "https://github.com/matthurtado/spongebabber/blob/main/static/impact.ttf?raw=true", imageOverride, textXPos, textYPos, targetWidthRatio)
+        if(data["spongeTheText"]):
+            spongeTheText = True
+        else:
+            spongeTheText = False
+        encoded_image = spongebobify.create_image(textToSponge, "https://github.com/matthurtado/spongebabber/blob/main/static/impact.ttf?raw=true", imageOverride, textXPos, textYPos, targetWidthRatio, spongeTheText)
         return encoded_image.decode('utf-8')
     else:
         return 'Content-Type not supported!'

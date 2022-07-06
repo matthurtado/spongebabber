@@ -34,6 +34,10 @@
                             <label for="targetWidthRatio">Target Width Ratio:</label>
                             <input class="form-control" placeholder="Enter target scaling ratio (between 0.0 to 1.0):" type="number" id="targetWidthRatio" min="0.0" max="1.0" />
                         </div>
+                        <div class="form-group">
+                            <label for="spongeTheText">SpOnGiFy the text?: </label>
+                            <input class="form-check-input" type="checkbox" value="" id="spongeTheText">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,7 +65,8 @@
                     "imageOverride": $('#imageOverride').val(),
                     "textXPos": $('#textXPos').val(),
                     "textYPos": $('#textYPos').val(),
-                    "targetWidthRatio": $('#targetWidthRatio').val()
+                    "targetWidthRatio": $('#targetWidthRatio').val(),
+                    "spongeTheText": $('#spongeTheText').is(':checked')
                 }),
                 success: function (data) {
                     $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
