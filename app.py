@@ -4,7 +4,7 @@ from PIL import Image
 import spongebobify
 
 def create_app():
-  app = Flask(__name__)
+  app = Flask(__name__, static_folder='static', static_url_path='')
   Bootstrap(app)
 
   return app
