@@ -22,7 +22,7 @@ def spongebobify_there(textToSponge = None):
     if (content_type == 'application/json'):
         data = json.loads(request.data)
         textToSponge = data['textToSponge']
-        encoded_image = spongebobify.create_image(textToSponge, "static/fonts/impact.ttf", "static/images/spongebob.jpg")
+        encoded_image = spongebobify.create_image(textToSponge, r"./static/fonts/impact.ttf", "static/images/spongebob.jpg")
         return encoded_image.decode('utf-8')
     else:
         return 'Content-Type not supported!'
