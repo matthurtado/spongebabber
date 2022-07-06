@@ -34,7 +34,7 @@ def create_image(text, font, image_path, text_x_pos, text_y_pos, target_width_ra
     # # Call draw Method to add 2D graphics in an image
     I1 = ImageDraw.Draw(image)
     # # Add Text to an image
-    I1.text((text_x_pos, text_y_pos), text_on_image, font=font, fill=(255, 255, 255))
+    I1.text((text_x_pos, text_y_pos), text_on_image, font=font, fill=(255, 255, 255), stroke_fill=(0, 0, 0), stroke_width=3)
     img_io = BytesIO()
     image.save(img_io, format='JPEG')
     img_io.seek(0)
