@@ -13,7 +13,7 @@ def home():
 def recent(page=None):
     if(page is None):
         page = 10
-    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page).all()
+    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page)
     return render_template("recent.html", sponges=sponges)
 
 @app.route("/api/recent")
