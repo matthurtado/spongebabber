@@ -21,19 +21,23 @@
                     <div class="card card-body">
                         <div class="form-group">
                             <label for="imageOverride">Meme image override</label>
-                            <input class="form-control" placeholder="Enter image override:" type="text" id="imageOverride" />
+                            <input class="form-control" placeholder="Enter image override:" type="text"
+                                id="imageOverride" />
                         </div>
                         <div class="form-group">
                             <label for="textXPos">Text X Pos:</label>
-                            <input class="form-control" placeholder="Enter X position override:" type="number" id="textXPos" />
+                            <input class="form-control" placeholder="Enter X position override:" type="number"
+                                id="textXPos" />
                         </div>
                         <div class="form-group">
                             <label for="textYPos">Text Y Pos:</label>
-                            <input class="form-control" placeholder="Enter Y position override:" type="number" id="textYPos" />
+                            <input class="form-control" placeholder="Enter Y position override:" type="number"
+                                id="textYPos" />
                         </div>
                         <div class="form-group">
                             <label for="targetWidthRatio">Target Width Ratio:</label>
-                            <input class="form-control" placeholder="Enter target scaling ratio (between 0.0 to 1.0):" type="number" id="targetWidthRatio" min="0.0" max="1.0" />
+                            <input class="form-control" placeholder="Enter target scaling ratio (between 0.0 to 1.0):"
+                                type="number" id="targetWidthRatio" min="0.0" max="1.0" />
                         </div>
                         <div class="form-group">
                             <label for="spongeTheText">SpOnGiFy the text?: </label>
@@ -50,29 +54,30 @@
             <h3 class="lead" id="spongeText">
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
 
-    {% block scripts %}
-    {{ super() }}
-    <script>
-        $('#spongeButton').click(function () {
-            var textToSponge = $('#textToSponge').val();
-            $.ajax({
-                url: '/spongebobify',
-                type: 'POST',
-                contentType: 'application/json',
-                "data": JSON.stringify({
-                    "textToSponge": textToSponge,
-                    "imageOverride": $('#imageOverride').val(),
-                    "textXPos": $('#textXPos').val(),
-                    "textYPos": $('#textYPos').val(),
-                    "targetWidthRatio": $('#targetWidthRatio').val(),
-                    "spongeTheText": $('#spongeTheText').is(':checked')
-                }),
-                success: function (data) {
-                    $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
-                }
-            });
+{% block scripts %}
+{{ super() }}
+<script>
+    $('#spongeButton').click(function () {
+        var textToSponge = $('#textToSponge').val();
+        $.ajax({
+            url: '/spongebobify',
+            type: 'POST',
+            contentType: 'application/json',
+            "data": JSON.stringify({
+                "textToSponge": textToSponge,
+                "imageOverride": $('#imageOverride').val(),
+                "textXPos": $('#textXPos').val(),
+                "textYPos": $('#textYPos').val(),
+                "targetWidthRatio": $('#targetWidthRatio').val(),
+                "spongeTheText": $('#spongeTheText').is(':checked')
+            }),
+            success: function (data) {
+                $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
+            }
         });
-    </script>
-    {% endblock %}
+    });
+</script>
+{% endblock %}
