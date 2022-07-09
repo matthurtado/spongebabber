@@ -1,7 +1,7 @@
 from datetime import datetime
 from app import app, db, spongebobify
 from app.models import LogRequest
-from flask import render_template, flash, redirect, url_for, json, request
+from flask import jsonify, render_template, flash, redirect, url_for, json, request
 
 
 @app.route("/")
@@ -15,6 +15,14 @@ def recent(page=None):
         page = 10
     sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page).all()
     return render_template("recent.html", sponges=sponges)
+
+@app.route("/api/recent")
+@app.route("/api/recent/<int:page>")
+def api_recent(page=None):
+    if(page is None):
+        page = 10
+    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page)
+    return jsonify(sponges = LogRequest.serialize_list(sponges))
 
 @app.route("/spongebobify/", methods=["POST"])
 @app.route("/spongebobify/<textToSponge>", methods=["GET", "POST"])
@@ -49,6 +57,8 @@ def spongebobify_there(textToSponge=None):
             targetWidthRatio,
             spongeTheText,
         )
+        if(spongeTheText):
+            textToSponge = spongebobify.spongebobify(textToSponge)
         log_request = LogRequest(
             text=textToSponge,
             text_x_pos=textXPos,
