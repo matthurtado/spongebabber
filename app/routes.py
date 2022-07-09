@@ -8,6 +8,13 @@ from flask import render_template, flash, redirect, url_for, json, request
 def home():
     return render_template("home.html")
 
+@app.route("/recent")
+@app.route("/recent/<int:page>")
+def recent(page=None):
+    if(page is None):
+        page = 10
+    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page).all()
+    return render_template("recent.html", sponges=sponges)
 
 @app.route("/spongebobify/", methods=["POST"])
 @app.route("/spongebobify/<textToSponge>", methods=["GET", "POST"])

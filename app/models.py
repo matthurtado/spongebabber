@@ -11,4 +11,4 @@ class LogRequest(db.Model):
     ip_address=db.Column(db.String(128))
     timestamp=db.Column(db.DateTime)
     def __repr__(self):
-        return '<Text {}>'.format(self.text)
+        return 

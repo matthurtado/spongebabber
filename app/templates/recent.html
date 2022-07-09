@@ -1,0 +1,31 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Recent Sponges{% endblock %}
+{% block content %}
+<div class="container">
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Text</th>
+        <th>Text X Position</th>
+        <th>Text Y Position</th>
+        <th>Target Width Ratio</th>
+        <th>Was the text sPoNgEd?</th>
+        <th>Time of spongification</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sponge in sponges %}
+      <tr>
+        <td>{{ sponge.text }}</td>
+        <td>{{ sponge.text_x_pos }}</td>
+        <td>{{ sponge.text_y_pos }}</td>
+        <td>{{ sponge.target_width_ratio }}</td>
+        <td>{{ sponge.sponge_the_text }}</td>
+        <td>{{ sponge.timestamp }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
