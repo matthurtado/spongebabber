@@ -9,5 +9,6 @@ class LogRequest(db.Model):
     target_width_ratio = db.Column(db.Float)
     sponge_the_text = db.Column(db.Boolean)
     ip_address=db.Column(db.String(128))
+    timestamp=db.Column(db.DateTime)
     def __repr__(self):
         return '<Text {}>'.format(self.text)
