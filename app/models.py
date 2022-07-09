@@ -1,3 +1,4 @@
+from ipaddress import ip_address
 from app import db
 
 class LogRequest(db.Model):
@@ -7,6 +8,6 @@ class LogRequest(db.Model):
     text_y_pos = db.Column(db.String(64))
     target_width_ratio = db.Column(db.Float)
     sponge_the_text = db.Column(db.Boolean)
-    
+    ip_address=db.Column(db.String(128))
     def __repr__(self):
         return '<Text {}>'.format(self.text)
