@@ -31,7 +31,7 @@ def spongebobify_there(textToSponge = None):
             spongeTheText = True
         else:
             spongeTheText = False
-        encoded_image = spongebobify.create_image(textToSponge, "https://github.com/matthurtado/spongebabber/blob/main/static/impact.ttf?raw=true", imageOverride, textXPos, textYPos, targetWidthRatio, spongeTheText)
+        encoded_image = spongebobify.create_image(textToSponge, "https://github.com/matthurtado/spongebabber/blob/main/app/static/impact.ttf?raw=true", imageOverride, textXPos, textYPos, targetWidthRatio, spongeTheText)
         log_request = LogRequest(text=textToSponge, text_x_pos=textXPos, text_y_pos=textYPos, target_width_ratio=targetWidthRatio, sponge_the_text=spongeTheText)
         db.session.add(log_request)
         db.session.commit()
