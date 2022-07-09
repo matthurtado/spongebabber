@@ -9,12 +9,9 @@ def home():
     return render_template("home.html")
 
 @app.route("/recent")
-@app.route("/recent/<int:page>")
-def recent(page=None):
-    if(page is None):
-        page = 10
-    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page)
-    return render_template("recent.html", sponges=sponges)
+def recent():
+    sponges = LogRequest.query.order_by(LogRequest.timestamp.desc())
+    return render_template("recent.html",title='Recent Sponges', sponges=sponges)
 
 @app.route("/api/recent")
 @app.route("/api/recent/<int:page>")
