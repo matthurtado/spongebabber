@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+{{ super() }}
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Account Information:</h3>
+        </div>
+        <table id="userData" class="table table-striped">
+            <tbody>
+                <tr>
+                    <td><b>Username</b></td>
+                    <td>{{session['user'].name}}</td>
+                </tr>
+                <tr>
+                    <td><b>Email</b></td>
+                    <td>{{session['user'].email}}</td>
+                </tr>
+                <tr>
+                    <td><b>Requests Per Day</b></td>
+                    <td>{{session['requests_per_day']}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="panel-body">
+            <span>Remaining requests today: {{session['remaining_requests_per_day']}}</span>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar"
+                    aria-valuemin="0" aria-valuemax="{{session['requests_per_day']}}" style="width:{{ session['remaining_requests_per_day'] * 10 }}%">
+                    {{session['remaining_requests_per_day']}} / {{session['requests_per_day']}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
