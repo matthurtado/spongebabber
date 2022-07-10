@@ -153,3 +153,4 @@ cython_debug/
 #.idea/
 .vscode/launch.json
 .vscode/settings.json
+.vscode/powershell_env.ps1

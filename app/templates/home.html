@@ -1,4 +1,4 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% block title %}Spongebobify Your Text{% endblock %}
 
 {% block content %}
@@ -57,30 +57,31 @@
         </div>
     </div>
     <!-- Central Modal Medium -->
-  <div class="modal fade" id="centralModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <!--Content-->
-      <div class="modal-content">
-        <!--Header-->
-        <div class="modal-header">
-          <h4 class="modal-title w-100" id="errorTitle">Error</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <div class="modal fade" id="centralModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <!--Content-->
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <h4 class="modal-title w-100" id="errorTitle">Error</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                    <span id="errorText"></span>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!--/.Content-->
         </div>
-        <!--Body-->
-        <div class="modal-body">
-          <span id="errorText"></span>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      <!--/.Content-->
     </div>
-  </div>
-  <!-- Central Modal Medium -->
+    <!-- Central Modal Medium -->
 </div>
 {% endblock %}
 
