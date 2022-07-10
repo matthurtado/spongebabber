@@ -1,7 +1,7 @@
 from sqlalchemy.inspection import inspect
 
-class Serializer(object):
 
+class Serializer(object):
     def serialize(self):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
