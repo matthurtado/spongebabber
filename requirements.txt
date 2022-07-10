@@ -39,6 +39,7 @@ pycparser==2.21
 Pygments==2.12.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
+python-dotenv==0.20.0
 requests==2.28.1
 rich==12.4.4
 rsa==4.8
