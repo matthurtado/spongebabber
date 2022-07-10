@@ -52,7 +52,35 @@
         <div class="col-md-6">
             <h3 class="lead" id="spongeText">
         </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" data-dismiss="alert">
+            <strong>You've hit the image limit of 10 images per day</strong>
+        </div>
     </div>
+    <!-- Central Modal Medium -->
+  <div class="modal fade" id="centralModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <h4 class="modal-title w-100" id="errorTitle">Error</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <span id="errorText"></span>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+  <!-- Central Modal Medium -->
 </div>
 {% endblock %}
 
@@ -75,6 +103,11 @@
             }),
             success: function (data) {
                 $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $('#errorTitle').html(errorThrown);
+                $('#errorText').html(XMLHttpRequest.responseText);
+                $('#centralModal').modal('show')
             }
         });
     });

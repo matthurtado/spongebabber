@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import app, db, spongebobify
+from app import app, db, spongebobify, limiter
 from app.models import LogRequest
 from flask import jsonify, render_template, flash, redirect, url_for, json, request
 
@@ -8,21 +8,25 @@ from flask import jsonify, render_template, flash, redirect, url_for, json, requ
 def home():
     return render_template("home.html")
 
+
 @app.route("/recent")
 def recent():
     sponges = LogRequest.query.order_by(LogRequest.timestamp.desc())
-    return render_template("recent.html",title='Recent Sponges', sponges=sponges)
+    return render_template("recent.html", title="Recent Sponges", sponges=sponges)
+
 
 @app.route("/api/recent")
 @app.route("/api/recent/<int:page>")
 def api_recent(page=None):
-    if(page is None):
+    if page is None:
         page = 10
     sponges = LogRequest.query.order_by(LogRequest.timestamp.desc()).limit(page)
-    return jsonify(sponges = LogRequest.serialize_list(sponges))
+    return jsonify(sponges=LogRequest.serialize_list(sponges))
+
 
 @app.route("/spongebobify/", methods=["POST"])
 @app.route("/spongebobify/<textToSponge>", methods=["GET", "POST"])
+@limiter.limit("10/day")
 def spongebobify_there(textToSponge=None):
     content_type = request.headers.get("Content-Type")
     if content_type == "application/json":
@@ -54,7 +58,7 @@ def spongebobify_there(textToSponge=None):
             targetWidthRatio,
             spongeTheText,
         )
-        if(spongeTheText):
+        if spongeTheText:
             textToSponge = spongebobify.spongebobify(textToSponge)
         log_request = LogRequest(
             text=textToSponge,
