@@ -1,4 +1,8 @@
 {% extends "bootstrap/base.html" %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.min.css">
+{% endblock %}
 <!-- Navbar -->
 {% block navbar %}
 <nav class="navbar navbar-default">
