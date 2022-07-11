@@ -4,7 +4,7 @@ import requests
 from app import app, db, spongebobify, limiter, oauth
 from app.models import LogRequest, User
 from flask import jsonify, render_template, redirect, url_for, json, request, session
-from config import Config
+from config import env
 
 # Database helpers
 def get_or_create(session, model, **kwargs):
@@ -18,7 +18,7 @@ def get_or_create(session, model, **kwargs):
 
 
 def get_user_rate_limit():
-    if session["id"] is None:
+    if session.get("id", None) is None:
         return "10/day"
     else:
         return User.query.filter_by(id=session["id"]).first().requests_per_day
@@ -60,7 +60,7 @@ def set_session_vars():
 def upload_data_to_imgur(image_data):
     url = "https://api.imgur.com/3/image"
     payload = {"image": image_data}
-    headers = {"Authorization": "Client-ID " + Config.IMGUR_CLIENT_ID}
+    headers = {"Authorization": "Client-ID " + env.IMGUR_CLIENT_ID}
     response = requests.request("POST", url, headers=headers, data=payload)
     return response.json()["data"]["link"]
 
@@ -70,7 +70,7 @@ def get_user_sponges(user_id):
 # Routes
 @app.route("/")
 def home():
-    if session["id"] is None:
+    if session.get("id", None) is None:
         session["is_admin"] = "false"
     print(session)
     return render_template("home.html")
@@ -138,7 +138,10 @@ def spongebobify_there(textToSponge=None):
         if spongeTheText:
             textToSponge = spongebobify.spongebobify(textToSponge)
         if upload_image_to_imgur:
-            imgur_upload_link = upload_data_to_imgur(encoded_image.decode("utf-8"))
+            try:
+                imgur_upload_link = upload_data_to_imgur(encoded_image.decode("utf-8"))
+            except:
+                print("COULDN'T UPLOAD TO IMGUR")
         log_request = LogRequest(
             text=textToSponge,
             text_x_pos=textXPos,
@@ -150,8 +153,11 @@ def spongebobify_there(textToSponge=None):
             imgur_link=imgur_upload_link or None,
             user_id=session.get("id") or None,
         )
-        db.session.add(log_request)
-        db.session.commit()
+        try:
+            db.session.add(log_request)
+            db.session.commit()
+        except:
+            print("COULDN'T SAVE TO DATABASE")
         if imgur_upload_link is not None:
             ret_data = {
                 "imgur_link": imgur_upload_link,
@@ -169,8 +175,8 @@ def spongebobify_there(textToSponge=None):
 
 @app.route("/google/")
 def google():
-    GOOGLE_CLIENT_ID = Config.GOOGLE_CLIENT_ID
-    GOOGLE_CLIENT_SECRET = Config.GOOGLE_CLIENT_SECRET
+    GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID
+    GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET
 
     CONF_URL = "https://accounts.google.com/.well-known/openid-configuration"
     oauth.register(
