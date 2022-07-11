@@ -1,4 +1,6 @@
 from datetime import datetime
+
+import requests
 from app import app, db, spongebobify, limiter, oauth
 from app.models import LogRequest, User
 from flask import jsonify, render_template, redirect, url_for, json, request, session
@@ -28,6 +30,30 @@ def get_number_of_requests_today(user_id = None):
         number_of_requests = User.query.filter_by(id=user_id).first().requests_per_day
         number_of_requests_today = LogRequest.query.filter(LogRequest.timestamp >= todays_datetime).filter_by(user_id=user_id).count()
         return number_of_requests - number_of_requests_today
+def set_session_vars():
+    if(session['id'] is None):
+        session['id'] = None
+        session['name'] = None
+        session['email'] = None
+        session['is_admin'] = None
+        session['last_login'] = None
+        session['requests_per_day'] = None
+        session['upload_to_imgur'] = None
+    else:
+        user = User.query.filter_by(id=session['id']).first()
+        session['name'] = user.name
+        session['email'] = user.email
+        session['is_admin'] = user.is_admin
+        session['last_login'] = user.last_login
+        session['requests_per_day'] = user.requests_per_day
+        session['upload_to_imgur'] = user.upload_to_imgur
+
+def upload_to_imgur(image_data):
+    url = "https://api.imgur.com/3/image"
+    payload = {"image": image_data}
+    headers = {"Authorization": "Client-ID " + Config.IMGUR_CLIENT_ID}
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return response.json()['data']['link']
 
 # Routes
 @app.route("/")
@@ -63,6 +89,7 @@ def spongebobify_there(textToSponge=None):
         textYPos = 280
         targetWidthRatio = 0.6
         spongeTheText = True
+        imgur_upload_link = None
 
         # Load json data
         data = json.loads(request.data)
@@ -80,7 +107,10 @@ def spongebobify_there(textToSponge=None):
             spongeTheText = True
         else:
             spongeTheText = False
-
+        if data["upload_to_imgur"]:
+            upload_image_to_imgur = True
+        else:
+            upload_image_to_imgur = False
         #Create the image to return
         encoded_image = spongebobify.create_image(
             textToSponge,
@@ -93,6 +123,8 @@ def spongebobify_there(textToSponge=None):
         )
         if spongeTheText:
             textToSponge = spongebobify.spongebobify(textToSponge)
+        if upload_image_to_imgur:
+            imgur_upload_link = upload_to_imgur(encoded_image.decode("utf-8"))
         log_request = LogRequest(
             text=textToSponge,
             text_x_pos=textXPos,
@@ -101,6 +133,7 @@ def spongebobify_there(textToSponge=None):
             sponge_the_text=spongeTheText,
             ip_address=request.remote_addr,
             timestamp=datetime.now(),
+            imgur_link = imgur_upload_link or None,
             user_id=session.get('id') or None
         )
         db.session.add(log_request)
@@ -133,6 +166,7 @@ def google():
 @app.route('/google/auth/')
 def google_auth():
     token = oauth.google.authorize_access_token()
+    print(token)
     user = token.get('userinfo')
     if user:
         session['user'] = user
@@ -147,9 +181,7 @@ def google_auth():
         else:
             user_db.last_login = datetime.now()
             db.session.commit()
-        session['is_admin'] = user_db.is_admin or False
-        session['id'] = user_db.id
-        session['requests_per_day'] = user_db.requests_per_day
+        set_session_vars()
     return redirect('/')
 
 @app.route('/logout/')
@@ -162,6 +194,19 @@ def account():
     if 'user' in session:
         user = session['user']
         session['remaining_requests_per_day'] = get_number_of_requests_today(session['id'])
+        session['upload_to_imgur'] = str(User.query.filter_by(id=session['id']).first().upload_to_imgur).lower()
         return render_template('account.html', user=user)
+    else:
+        return redirect('/')
+
+@app.route('/account/update/', methods=['POST'])
+def update_account():
+    if 'user' in session:
+        user = User.query.filter_by(id=session['id']).first()
+        upload_to_imgur = int(request.form['upload_to_imgur'])
+        user.upload_to_imgur = upload_to_imgur
+        db.session.commit()
+        set_session_vars()
+        return redirect('/account/')
     else:
         return redirect('/')

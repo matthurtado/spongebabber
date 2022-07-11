@@ -14,3 +14,5 @@ class Config(object):
     USERNAME = os.environ.get('USERNAME')
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+    IMGUR_CLIENT_ID = os.environ.get('IMGUR_CLIENT_ID')
+    IMGUR_CLIENT_SECRET = os.environ.get('IMGUR_CLIENT_SECRET')

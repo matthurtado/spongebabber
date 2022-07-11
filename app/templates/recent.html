@@ -1,41 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 {{ super() }}
+<!-- Page Content -->
 <div class="container">
-  <table id="data" class="table table-striped">
-    <thead>
-      <tr>
-        <th>Text</th>
-        <th>Text X Position</th>
-        <th>Text Y Position</th>
-        <th>Target Width Ratio</th>
-        <th>Was the text sPoNgEd?</th>
-        <th>Time of spongification</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for sponge in sponges %}
-      <tr>
-        <td>{{ sponge.text }}</td>
-        <td>{{ sponge.text_x_pos }}</td>
-        <td>{{ sponge.text_y_pos }}</td>
-        <td>{{ sponge.target_width_ratio }}</td>
-        <td>{{ sponge.sponge_the_text }}</td>
-        <td>{{ sponge.timestamp }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <h1 class="fw-light text-center text-lg-start mt-4 mb-0">Thumbnail Gallery</h1>
+  <hr class="mt-2 mb-5">
+  <div class="row text-center text-lg-start">
+    {% for sponge in sponges %}
+    {% if sponge.imgur_link %}
+    <div class="col-lg-3 col-md-4 col-6">
+      <a href="#" class="d-block mb-4 h-100">
+        <img class="img-fluid img-thumbnail" src="{{ sponge.imgur_link }}" alt="">
+      </a>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
-<script>
-  $(document).ready(function () {
-    $('#data').DataTable();
-  });
-</script>
 {% endblock %}

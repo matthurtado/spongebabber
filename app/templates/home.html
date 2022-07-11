@@ -42,6 +42,10 @@
                             <label for="spongeTheText">SpOnGiFy the text?: </label>
                             <input class="form-check-input" type="checkbox" checked id="spongeTheText">
                         </div>
+                        <div class="form-group">
+                            <label for="upload_to_imgur">Upload to imgur?</label>
+                            <input class="form-check-input" type="checkbox" id="upload_to_imgur" >
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,6 +92,12 @@
 {% block scripts %}
 {{ super() }}
 <script>
+     $(document).ready(function() {
+        var upload_to_imgur = {{session['upload_to_imgur']}};
+        if(upload_to_imgur) {
+            $('#upload_to_imgur').prop('checked', true);
+        }
+    });
     $('#spongeButton').click(function () {
         var textToSponge = $('#textToSponge').val();
         $.ajax({
@@ -100,7 +110,8 @@
                 "textXPos": $('#textXPos').val(),
                 "textYPos": $('#textYPos').val(),
                 "targetWidthRatio": $('#targetWidthRatio').val(),
-                "spongeTheText": $('#spongeTheText').is(':checked')
+                "spongeTheText": $('#spongeTheText').is(':checked'),
+                "upload_to_imgur": $('#upload_to_imgur').is(':checked')
             }),
             success: function (data) {
                 $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
