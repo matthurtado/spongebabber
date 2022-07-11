@@ -14,7 +14,7 @@ class _Config:
     def __init__(self):
         self.ON_HEROKU = os.getenv("ON_HEROKU")
         self.SECRET_KEY = os.getenv("SECRET_KEY")
-        self.DATABASE_URL = os.getenv("DATABASE_URL")
+        self.SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
         self.USERNAME = os.getenv("USERNAME")
         self.GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
         self.GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -26,7 +26,7 @@ class _Config:
         self._modify_envs()
 
     def _modify_envs(self):
-        self._dumb_heroku()
+        #self._dumb_heroku()
         self._track_sqlalchemy_modifications()
 
     def _track_sqlalchemy_modifications(self, track_them=False):
