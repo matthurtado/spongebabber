@@ -1,5 +1,4 @@
 from datetime import datetime
-from distutils.command.upload import upload
 
 import requests
 from app import app, db, spongebobify, limiter, oauth
