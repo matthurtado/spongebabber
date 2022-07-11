@@ -87,6 +87,8 @@ def upload_data_to_imgur(image_data):
     response = requests.request("POST", url, headers=headers, data=payload)
     return response.json()["data"]["link"]
 
+def get_user_sponges(user_id):
+    return LogRequest.query.filter_by(user_id=user_id).filter(LogRequest.imgur_link != None).all()
 
 # Routes
 @app.route("/")
@@ -244,6 +246,11 @@ def account():
         session["remaining_requests_per_day"] = get_number_of_requests_today(
             session["id"]
         )
-        return render_template("account.html", user=user)
+        user_sponges = get_user_sponges(session["id"])
+        return_value = {
+            "user": user,
+            "user_sponges": user_sponges
+        }
+        return render_template("account.html", account=return_value)
     else:
         return redirect("/")
