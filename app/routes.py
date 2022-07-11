@@ -16,51 +16,60 @@ def get_or_create(session, model, **kwargs):
         session.add(instance)
         return instance
 
+
 def get_user_rate_limit():
-    if(session['id'] is None):
+    if session["id"] is None:
         return "10/day"
     else:
-        return User.query.filter_by(id=session['id']).first().requests_per_day
+        return User.query.filter_by(id=session["id"]).first().requests_per_day
 
-def get_number_of_requests_today(user_id = None):
-    if(user_id is None):
+
+def get_number_of_requests_today(user_id=None):
+    if user_id is None:
         return 10
     else:
-        todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+        todays_datetime = datetime(
+            datetime.today().year, datetime.today().month, datetime.today().day
+        )
         number_of_requests = User.query.filter_by(id=user_id).first().requests_per_day
-        number_of_requests_today = LogRequest.query.filter(LogRequest.timestamp >= todays_datetime).filter_by(user_id=user_id).count()
+        number_of_requests_today = (
+            LogRequest.query.filter(LogRequest.timestamp >= todays_datetime)
+            .filter_by(user_id=user_id)
+            .count()
+        )
         return number_of_requests - number_of_requests_today
+
+
 def set_session_vars():
-    if(session['id'] is None):
-        session['id'] = None
-        session['name'] = None
-        session['email'] = None
-        session['is_admin'] = "false"
-        session['last_login'] = None
-        session['requests_per_day'] = None
-        session['upload_to_imgur'] = "false"
+    if session["id"] is None:
+        session["id"] = None
+        session["name"] = None
+        session["email"] = None
+        session["is_admin"] = "false"
+        session["last_login"] = None
+        session["requests_per_day"] = None
     else:
-        user = User.query.filter_by(id=session['id']).first()
-        session['name'] = user.name
-        session['email'] = user.email
-        session['is_admin'] = str(user.is_admin).lower()
-        session['last_login'] = user.last_login
-        session['requests_per_day'] = user.requests_per_day
-        session['upload_to_imgur'] = str(user.upload_to_imgur).lower()
+        user = User.query.filter_by(id=session["id"]).first()
+        session["name"] = user.name
+        session["email"] = user.email
+        session["is_admin"] = str(user.is_admin).lower()
+        session["last_login"] = user.last_login
+        session["requests_per_day"] = user.requests_per_day
+
 
 def upload_data_to_imgur(image_data):
     url = "https://api.imgur.com/3/image"
     payload = {"image": image_data}
     headers = {"Authorization": "Client-ID " + Config.IMGUR_CLIENT_ID}
     response = requests.request("POST", url, headers=headers, data=payload)
-    return response.json()['data']['link']
+    return response.json()["data"]["link"]
+
 
 # Routes
 @app.route("/")
 def home():
-    if(session['id'] is None):
-        session['upload_to_imgur'] = "false"
-        session['is_admin'] = "false"
+    if session["id"] is None:
+        session["is_admin"] = "false"
     print(session)
     return render_template("home.html")
 
@@ -114,7 +123,7 @@ def spongebobify_there(textToSponge=None):
             upload_image_to_imgur = True
         else:
             upload_image_to_imgur = False
-        #Create the image to return
+        # Create the image to return
         encoded_image = spongebobify.create_image(
             textToSponge,
             "https://github.com/matthurtado/spongebabber/blob/main/app/static/impact.ttf?raw=true",
@@ -136,83 +145,84 @@ def spongebobify_there(textToSponge=None):
             sponge_the_text=spongeTheText,
             ip_address=request.remote_addr,
             timestamp=datetime.now(),
-            imgur_link = imgur_upload_link or None,
-            user_id=session.get('id') or None
+            imgur_link=imgur_upload_link or None,
+            user_id=session.get("id") or None,
         )
         db.session.add(log_request)
         db.session.commit()
-        return encoded_image.decode("utf-8")
+        if imgur_upload_link is not None:
+            ret_data = {
+                "imgur_link": imgur_upload_link,
+                "text": textToSponge,
+            }
+        else:
+            ret_data = {
+                "text": textToSponge,
+                "encoded_image": encoded_image.decode("utf-8"),
+            }
+        return jsonify(ret_data)
     else:
         return "Content-Type not supported!"
 
-@app.route('/google/')
+
+@app.route("/google/")
 def google():
     GOOGLE_CLIENT_ID = Config.GOOGLE_CLIENT_ID
     GOOGLE_CLIENT_SECRET = Config.GOOGLE_CLIENT_SECRET
 
-    CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+    CONF_URL = "https://accounts.google.com/.well-known/openid-configuration"
     oauth.register(
-        name='google',
+        name="google",
         client_id=GOOGLE_CLIENT_ID,
         client_secret=GOOGLE_CLIENT_SECRET,
         server_metadata_url=CONF_URL,
-        client_kwargs={
-            'scope': 'openid email profile'
-        }
+        client_kwargs={"scope": "openid email profile"},
     )
 
     # Redirect to google_auth function
-    redirect_uri = url_for('google_auth', _external=True)
+    redirect_uri = url_for("google_auth", _external=True)
     print(redirect_uri)
     return oauth.google.authorize_redirect(redirect_uri)
 
-@app.route('/google/auth/')
+
+@app.route("/google/auth/")
 def google_auth():
     token = oauth.google.authorize_access_token()
     print(token)
-    user = token.get('userinfo')
+    user = token.get("userinfo")
     if user:
-        session['user'] = user
-        
-        user_db = get_or_create(db.session, User, email=user['email'])
-        if(user_db.last_login is None):
-            user_db.email = user['email']
-            user_db.name = user['name']
+        session["user"] = user
+
+        user_db = get_or_create(db.session, User, email=user["email"])
+        if user_db.last_login is None:
+            user_db.email = user["email"]
+            user_db.name = user["name"]
             user_db.last_login = datetime.now()
             user_db.num_of_requests = 50
             db.session.commit()
         else:
             user_db.last_login = datetime.now()
             db.session.commit()
-        session['id'] = user_db.id
+        session["id"] = user_db.id
         set_session_vars()
-    return redirect('/')
+    return redirect("/")
 
-@app.route('/logout/')
+
+@app.route("/logout/")
 def logout():
-    session.pop('user', None)
-    session['id'] = None
-    session['is_admin'] = False
-    return redirect('/')
+    session.pop("user", None)
+    session["id"] = None
+    session["is_admin"] = False
+    return redirect("/")
 
-@app.route('/account/')
+
+@app.route("/account/")
 def account():
-    if 'user' in session:
-        user = session['user']
-        session['remaining_requests_per_day'] = get_number_of_requests_today(session['id'])
-        session['upload_to_imgur'] = str(User.query.filter_by(id=session['id']).first().upload_to_imgur).lower()
-        return render_template('account.html', user=user)
+    if "user" in session:
+        user = session["user"]
+        session["remaining_requests_per_day"] = get_number_of_requests_today(
+            session["id"]
+        )
+        return render_template("account.html", user=user)
     else:
-        return redirect('/')
-
-@app.route('/account/update/', methods=['POST'])
-def update_account():
-    if 'user' in session:
-        user = User.query.filter_by(id=session['id']).first()
-        upload_to_imgur = int(request.form['upload_to_imgur'])
-        user.upload_to_imgur = upload_to_imgur
-        db.session.commit()
-        set_session_vars()
-        return redirect('/account/')
-    else:
-        return redirect('/')
+        return redirect("/")

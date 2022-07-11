@@ -45,7 +45,7 @@
                         {% if session['user'] %}
                         <div class="form-group">
                             <label for="upload_to_imgur">Upload to imgur?</label>
-                            <input class="form-check-input" type="checkbox" id="upload_to_imgur" >
+                            <input class="form-check-input" type="checkbox" id="upload_to_imgur" checked="false">
                         </div>
                         {% endif %}
                     </div>
@@ -94,12 +94,6 @@
 {% block scripts %}
 {{ super() }}
 <script>
-     $(document).ready(function() {
-        var upload_to_imgur = {{session['upload_to_imgur']}};
-        if(upload_to_imgur) {
-            $('#upload_to_imgur').prop('checked', true);
-        }
-    });
     $('#spongeButton').click(function () {
         var textToSponge = $('#textToSponge').val();
         $.ajax({
@@ -116,7 +110,12 @@
                 "upload_to_imgur": $('#upload_to_imgur').is(':checked')
             }),
             success: function (data) {
-                $('#spongeText').html("<img src='data:image/jpeg;base64," + data + "'/>")
+                console.log(data.text);
+                if(data.imgur_link){
+                    $('#spongeText').html("<img src='" + data.imgur_link + "' />");
+                } else {
+                    $('#spongeText').html("<img src='data:image/jpeg;base64," + data.encoded_image + "'/>")
+                }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $('#errorTitle').html(errorThrown);
