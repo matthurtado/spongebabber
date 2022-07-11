@@ -123,8 +123,8 @@ def spongebobify_there(textToSponge=None):
     textToSponge = data["textToSponge"]
 
     imageOverride = data["imageOverride"] if data["imageOverride"] else MEME_DEFAULTS["image"]
-    textXPos = data["textXPos"] if data["textXPos"] else MEME_DEFAULTS["text_x_pos"]
-    textYPos = data["textYPos"] if data["textYPos"] else MEME_DEFAULTS["text_y_pos"]
+    textXPos = int(data["textXPos"]) if data["textXPos"] else MEME_DEFAULTS["text_x_pos"]
+    textYPos = int(data["textYPos"]) if data["textYPos"] else MEME_DEFAULTS["text_y_pos"]
     targetWidthRatio = float(data["targetWidthRatio"]) if data["targetWidthRatio"] else MEME_DEFAULTS["target_width_ratio"]
     spongeTheText = True if data["spongeTheText"] else False
     upload_image_to_imgur = True if data["upload_to_imgur"] else False
