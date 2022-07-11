@@ -38,7 +38,7 @@ def set_session_vars():
         session['is_admin'] = None
         session['last_login'] = None
         session['requests_per_day'] = None
-        session['upload_to_imgur'] = None
+        session['upload_to_imgur'] = False
     else:
         user = User.query.filter_by(id=session['id']).first()
         session['name'] = user.name
@@ -58,6 +58,9 @@ def upload_to_imgur(image_data):
 # Routes
 @app.route("/")
 def home():
+    if(session['id'] is None):
+        session['upload_to_imgur'] = False
+        session['is_admin'] = False
     print(session)
     return render_template("home.html")
 
