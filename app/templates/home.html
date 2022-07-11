@@ -42,10 +42,12 @@
                             <label for="spongeTheText">SpOnGiFy the text?: </label>
                             <input class="form-check-input" type="checkbox" checked id="spongeTheText">
                         </div>
+                        {% if session['upload_to_imgur'] == 'true' %}
                         <div class="form-group">
                             <label for="upload_to_imgur">Upload to imgur?</label>
                             <input class="form-check-input" type="checkbox" id="upload_to_imgur" >
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

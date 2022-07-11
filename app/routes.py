@@ -35,20 +35,20 @@ def set_session_vars():
         session['id'] = None
         session['name'] = None
         session['email'] = None
-        session['is_admin'] = None
+        session['is_admin'] = "false"
         session['last_login'] = None
         session['requests_per_day'] = None
-        session['upload_to_imgur'] = False
+        session['upload_to_imgur'] = "false"
     else:
         user = User.query.filter_by(id=session['id']).first()
         session['name'] = user.name
         session['email'] = user.email
-        session['is_admin'] = user.is_admin
+        session['is_admin'] = str(user.is_admin).lower()
         session['last_login'] = user.last_login
         session['requests_per_day'] = user.requests_per_day
-        session['upload_to_imgur'] = user.upload_to_imgur
+        session['upload_to_imgur'] = str(user.upload_to_imgur).lower()
 
-def upload_to_imgur(image_data):
+def upload_data_to_imgur(image_data):
     url = "https://api.imgur.com/3/image"
     payload = {"image": image_data}
     headers = {"Authorization": "Client-ID " + Config.IMGUR_CLIENT_ID}
@@ -59,8 +59,8 @@ def upload_to_imgur(image_data):
 @app.route("/")
 def home():
     if(session['id'] is None):
-        session['upload_to_imgur'] = False
-        session['is_admin'] = False
+        session['upload_to_imgur'] = "false"
+        session['is_admin'] = "false"
     print(session)
     return render_template("home.html")
 
@@ -127,7 +127,7 @@ def spongebobify_there(textToSponge=None):
         if spongeTheText:
             textToSponge = spongebobify.spongebobify(textToSponge)
         if upload_image_to_imgur:
-            imgur_upload_link = upload_to_imgur(encoded_image.decode("utf-8"))
+            imgur_upload_link = upload_data_to_imgur(encoded_image.decode("utf-8"))
         log_request = LogRequest(
             text=textToSponge,
             text_x_pos=textXPos,
@@ -184,12 +184,15 @@ def google_auth():
         else:
             user_db.last_login = datetime.now()
             db.session.commit()
+        session['id'] = user_db.id
         set_session_vars()
     return redirect('/')
 
 @app.route('/logout/')
 def logout():
     session.pop('user', None)
+    session['id'] = None
+    session['is_admin'] = False
     return redirect('/')
 
 @app.route('/account/')
