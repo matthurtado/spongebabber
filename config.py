@@ -6,7 +6,7 @@ class Config(object):
     ON_HEROKU = os.environ.get('ON_HEROKU')
     SECRET_KEY = os.environ.get('SECRET_KEY')
     if(ON_HEROKU):
-        # Have to do this because Heroku is a dumb piece of shit
+        # Have to do this because of Heroku incompatibility with Flask-SQLAlchemy
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
     else:
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
