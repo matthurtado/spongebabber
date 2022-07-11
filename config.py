@@ -18,6 +18,8 @@ class _Config:
         self.USERNAME = os.getenv("USERNAME")
         self.GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
         self.GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+        self.IMGUR_CLIENT_ID = os.getenv('IMGUR_CLIENT_ID')
+        self.IMGUR_CLIENT_SECRET = os.getenv('IMGUR_CLIENT_SECRET')
         self.FLASK_ENV = os.getenv("FLASK_ENV")
 
         self._check_env_vars()
