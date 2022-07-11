@@ -26,17 +26,18 @@ class _Config:
         self._modify_envs()
 
     def _modify_envs(self):
-        #self._dumb_heroku()
+        self._dumb_heroku()
         self._track_sqlalchemy_modifications()
 
     def _track_sqlalchemy_modifications(self, track_them=False):
         self.SQLALCHEMY_TRACK_MODIFICATIONS = track_them
 
-    # Have to do this because Heroku is a dumb piece of shit
+    # Fixing Heroku's environment variables
     def _dumb_heroku(self):
-        self.SQLALCHEMY_DATABASE_URI = self.DATABASE_URL.replace(
-            "://", "ql://" if self.ON_HEROKU else "://", 1
-        )
+        if(self.ON_HEROKU == "True"):
+            self.SQLALCHEMY_DATABASE_URI = self.SQLALCHEMY_DATABASE_URI.replace("://", "ql://", 1)
+        else:
+            self.SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
     def _check_env_vars(self):
         for v in dir(self):
